@@ -22,15 +22,15 @@ resource "aws_security_group" "public" {
     # SSH port.
     ingress {
         protocol = "-1"
-        from_port = 22
-        to_port = 22
+        from_port = 0
+        to_port = 0
         cidr_blocks = ["0.0.0.0/0"]
     }
 
     egress {
         protocol = "-1"
         from_port = 0
-        to_port = 65535
+        to_port = 0
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
@@ -43,39 +43,39 @@ resource "aws_security_group" "private" {
     # SSH port.
     ingress {
         protocol = "-1"
-        from_port = 22
-        to_port = 22
+        from_port = 0
+        to_port = 0
         cidr_blocks = ["172.31.0.0/16"]
     }
 
     # Cluster management node port.
     ingress {
         protocol = "-1"
-        from_port = 1186
-        to_port = 1186
+        from_port = 0
+        to_port = 0
         cidr_blocks = ["172.31.0.0/16"]
     }
 
     # Cluster data nodes port.
     ingress {
         protocol = "-1"
-        from_port = 2202
-        to_port = 2202
+        from_port = 0
+        to_port = 0
         cidr_blocks = ["172.31.0.0/16"]
     }
 
     # MySQL server port.
     ingress {
         protocol = "-1"
-        from_port = 3306
-        to_port = 3306
+        from_port = 0
+        to_port = 0
         cidr_blocks = ["172.31.0.0/16"]
     }
 
     egress {
         protocol = "-1"
         from_port = 0
-        to_port = 65535
+        to_port = 0
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
