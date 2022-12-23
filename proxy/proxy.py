@@ -1,3 +1,9 @@
+# This script provides a way to execute SQL queries on a MySQL database running on an Amazon EC2 instance. 
+# The script allows the user to choose between three different strategies for executing the query:
+# - Randomized: The query is executed on a randomly chosen subordinate node
+# - Customized: The query is executed on the subordinate node with the lowest ping time
+# - Direct: The query is executed directly on the master node
+
 import random
 import pymysql
 
@@ -20,6 +26,15 @@ subordinates = [
 ]
 
 def executeQuery(query, target):
+    """
+    This function executes the given `query` on the MySQL database running on the `target` node. 
+    The `target` node can be either the master node or a subordinate node. 
+    If the `target` node is a subordinate node, the function establishes an SSH tunnel to the master 
+    node using the `sshtunnel` library before executing the query.
+
+    The function returns the result of the query.
+    """
+
     print("executing node : " + target)
 
     tunnel = ""
@@ -41,9 +56,15 @@ def executeQuery(query, target):
     
 
 def getRandomSubordinate():
+    """
+    This function returns a randomly chosen subordinate node from the `subordinates` list.
+    """
     return random.choice(subordinates)
 
 def getBestSubordinate():
+    """
+    This function returns the subordinate node with the lowest ping time from the `subordinates` list.
+    """
     bestSubordinate = ""
     bestPing = 1000000
     for subordinate in subordinates:
@@ -54,6 +75,14 @@ def getBestSubordinate():
     return bestSubordinate
 
 def processQuery(query, strategy):
+    """
+    This function processes the given `query` according to the specified `strategy`. 
+    If the `strategy` is "randomized" or "customized", the function calls the `getRandomSubordinate()` 
+    or `getBestSubordinate()` function respectively to determine the target node for the query. 
+    If the `strategy` is "direct", the function executes the query directly on the master node.
+
+    The function returns the result of the query.
+    """
     query = query.strip()
 
     if query.split(" ")[0].upper() == "SELECT":
@@ -70,6 +99,7 @@ def processQuery(query, strategy):
 
 
 if __name__ == "__main__":
+    # Strategy choice.
     print("pick a strategy (enter the first letter):")
     print("(C) <customized strategy>")
     print("(R) <randomized strategy>")
@@ -86,5 +116,6 @@ if __name__ == "__main__":
         print("invalid input, direct strategy set as default")
         strategy = "direct"
 
+    # Fake console.
     while 1:
         print(processQuery(input("<" + strategy + " strategy> : "), strategy))
